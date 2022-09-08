@@ -19,6 +19,7 @@
 	ranged = TRUE
 	speed = 2
 	move_to_delay = 2
+	move_force = 3000
 	attack_sound = 'sound/abnormalities/mountain/bite.ogg'
 	attack_verb_continuous = "bites"
 	attack_verb_simple = "bite"
