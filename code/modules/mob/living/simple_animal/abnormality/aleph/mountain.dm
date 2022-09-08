@@ -78,6 +78,46 @@
 		return FALSE
 	return ..()
 
+/mob/living/simple_animal/hostile/abnormality/mountain/MobBump(mob/M) // He can walk by you if he's trying to.
+	if(phase == 1 || (phase == 2 && health <= maxHealth*0.5))
+		if(get_dist(src, M) != 1)
+			return Shove_Check(M)
+		if(Shove_Check(M))
+			Shove(M)
+			return TRUE
+	return ..()
+
+/mob/living/simple_animal/hostile/abnormality/mountain/proc/Shove_Check(mob/M)
+	if(M.move_force > move_force)
+		return FALSE
+	var/valid_directions = list(NORTH, EAST, SOUTH, WEST)
+	for(var/direction in list(NORTH, EAST, SOUTH, WEST))
+		if(get_step(get_turf(M), direction).density)
+			valid_directions -= direction
+			continue
+		for(var/obj/machinery/door/D in get_step(get_turf(M), direction).contents)
+			if(D.density)
+				valid_directions -= direction
+				break
+	if(LAZYLEN(valid_directions))
+		return TRUE
+	return FALSE
+
+/mob/living/simple_animal/hostile/abnormality/mountain/proc/Shove(mob/M)
+	var/valid_directions = list(NORTH, EAST, SOUTH, WEST)
+	for(var/direction in list(NORTH, EAST, SOUTH, WEST))
+		if(get_step(get_turf(M), direction).density)
+			valid_directions -= direction
+			continue
+		for(var/obj/machinery/door/D in get_step(get_turf(M), direction).contents)
+			if(D.density)
+				valid_directions -= direction
+				break
+	var/shove_dir = pick(valid_directions)
+	M.Move(get_step(get_turf(M), shove_dir), shove_dir)
+	for(var/mob/living/carbon/human/person in get_turf(M).contents)
+		person.Knockdown(5)
+
 //Nabbed from Big Bird
 /mob/living/simple_animal/hostile/abnormality/mountain/proc/on_mob_death(datum/source, mob/living/died, gibbed)
 	SIGNAL_HANDLER
