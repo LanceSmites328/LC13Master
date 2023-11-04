@@ -1,5 +1,5 @@
 ///// Basic abnochem systems!
-
+GLOBAL_LIST_EMPTY(cached_abno_chems)
 /datum/reagent/abnormality // The base abnormality chemical, with several "easy" modular traits that people can enable and disable with variables.
 	name = "Raw Enkephalin" // If you don't change anything else, CHANGE THIS.
 	description = "You don't think you should be seeing this." // And this too.

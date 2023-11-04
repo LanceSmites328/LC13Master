@@ -87,6 +87,9 @@
 		GLOB.cached_abno_work_rates[type] = work_chances.Copy()
 	if(!(type in GLOB.cached_abno_resistances))
 		GLOB.cached_abno_resistances[type] = damage_coeff.getList()
+	if(chem_type) // Seperate if-statements so that the less intensive check is run first.
+		if(!(chem_type in GLOB.cached_abno_chems))
+			GLOB.cached_abno_chems[chem_type] = type
 	for(var/action_type in attack_action_types)
 		var/datum/action/innate/abnormality_attack/attack_action = new action_type()
 		attack_action.Grant(src)

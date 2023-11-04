@@ -37,6 +37,7 @@ SUBSYSTEM_DEF(lobotomy_events)
 /datum/controller/subsystem/lobotomy_events/Initialize(start_timeofday)
 	. = ..()
 	RegisterSignal(SSdcs, COMSIG_GLOB_ABNORMALITY_BREACH, .proc/OnAbnoBreach)
+	MakeRecipes()
 
 /datum/controller/subsystem/lobotomy_events/fire(resumed)
 	if(season_last_change < world.time)
@@ -187,3 +188,29 @@ SUBSYSTEM_DEF(lobotomy_events)
 	current_season = seasons[index]
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_SEASON_CHANGE, current_season)
 	return
+
+/datum/controller/subsystem/lobotomy_events/proc/MakeRecipes()
+	for(var/type_path in subtypesof(/datum/ac_recipe))
+		if(ispath(type_path, /datum/ac_recipe/pe))
+			var/datum/ac_recipe/pe/TP = type_path
+			if(initial(TP.random_amount))
+				continue
+		if(type_path == /datum/ac_recipe/reagent)
+			continue
+		new type_path
+	var/datum/ac_recipe/recipe
+	var/iteration = 1
+	for(var/i = 1 to rand(2, 4))
+		recipe = new /datum/ac_recipe/pe
+		recipe.name = recipe.name + " ([iteration])"
+		iteration++
+	iteration = 1
+	for(var/i = 1 to rand(2, 5))
+		recipe = new /datum/ac_recipe/pe/medium
+		recipe.name = recipe.name + " ([iteration])"
+		iteration++
+	iteration = 1
+	for(var/i = 1 to rand(2, 3))
+		recipe = new /datum/ac_recipe/pe/hard
+		recipe.name = recipe.name + " ([iteration])"
+		iteration++
