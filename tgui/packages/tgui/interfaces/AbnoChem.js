@@ -15,8 +15,8 @@ export const AbnoChem = (props, context) => {
           <Mix />
         ) || screen === 'ac_create' && (
           <Create />
-        ) || screen === 'ac_options' && (
-          <Options />
+        ) || screen === 'ac_refine' && (
+          <Refine />
         ) || (
           <Home />
         )}
@@ -45,10 +45,10 @@ const MoveButtons = (props, context) => {
         content={"Create"}
         onClick={() => act("changeScreen", { to_screen: "ac_create" })} />
       )}
-      {screen !== 'ac_options' && (
+      {screen !== 'ac_refine' && (
         <Button
-        content={"Options"}
-        onClick={() => act("changeScreen", { to_screen: "ac_options" })} />
+        content={"Refine"}
+        onClick={() => act("changeScreen", { to_screen: "ac_refine" })} />
       )}
     </Section>
   );
@@ -73,7 +73,7 @@ const Home = (props, context) => {
     return <Create />;
   }
   else if (screen === 'ac_options') {
-    return <Options />;
+    return <Refine />;
   }
   return (
     <>
@@ -219,7 +219,7 @@ const Create = (props, context) => {
   );
 };
 
-const Options = (props, context) => {
+const Refine = (props, context) => {
   const { act, data } = useBackend(context);
   const {
     screen,
@@ -228,11 +228,34 @@ const Options = (props, context) => {
     containerCurrentVolume,
     containerMaxVolume,
     container,
+    RefineRecipes = [],
+    ReagentRecipes = [],
   } = data;
   return (
-    <Section>
-
-    </Section>
+    <Box>
+      <Section title="Refine">
+        <RecipeList>
+          {RefineRecipes.map(recipe => (
+            <RecipeListEntry
+              key={recipe.id}
+              recipe={recipe}
+              reqList={data["reqs"+recipe.name]}
+              showReq={data[recipe.name]} />
+          ))}
+        </RecipeList>
+      </Section>
+      <Section title="Reagents">
+        <RecipeList>
+          {ReagentRecipes.map(recipe => (
+            <RecipeListEntry
+              key={recipe.id}
+              recipe={recipe}
+              reqList={data["reqs"+recipe.name]}
+              showReq={data[recipe.name]} />
+          ))}
+        </RecipeList>
+      </Section>
+    </Box>
   );
 };
 

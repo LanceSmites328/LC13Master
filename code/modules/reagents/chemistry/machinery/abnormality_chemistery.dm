@@ -2,7 +2,7 @@
 #define AC_SCREEN_HOME "ac_home"
 #define AC_SCREEN_MIX "ac_mix"
 #define AC_SCREEN_CREATE "ac_create"
-#define AC_SCREEN_OPTIONS "ac_options"
+#define AC_SCREEN_REFINE "ac_refine"
 
 #define AC_DESTINATION_BUFFER "Buffer"
 #define AC_DESTINATION_MIXER "Mixer"
@@ -36,7 +36,7 @@
 
 /obj/machinery/abnormality_chemstation/Initialize()
 	. = ..()
-	create_reagents(500)
+	create_reagents(2500)
 	reagents.flags = NO_REACT
 	for(var/datum/ac_recipe/ACR in GLOB.abnormality_chem_recipes)
 		LAZYADDASSOC(recipe_list, ACR.craft_category, list(ACR))
@@ -146,6 +146,42 @@
 
 		.["recipes"] = recipes
 
+	if(screen == AC_SCREEN_REFINE)
+		var/list/refine_recipes = list()
+		for(var/datum/ac_recipe/ACR in recipe_list["AC_REFINE"])
+			var/list/reqs = list()
+			for(var/R in ACR.chem_req)
+				var/datum/reagent/AR = R
+				var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
+				reqs.Add(list(list(
+					"name" = initial(AR.name),
+					"id" = ckey(initial(AR.name)),
+					"volume" = vol,
+					"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
+					)))
+			refine_recipes.Add(list(list("name" = ACR.name, "id" = ACR.name, "desc" = ACR.desc)))
+			.["reqs"+ACR.name] = reqs
+			.[ACR.name] = recipe_list["AC_REFINE"][ACR]
+
+		.["RefineRecipes"] = refine_recipes
+
+		var/list/reagent_recipes = list()
+		for(var/datum/ac_recipe/ACR in recipe_list["AC_REAGENT"])
+			var/list/reqs = list()
+			for(var/R in ACR.chem_req)
+				var/datum/reagent/AR = R
+				var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
+				reqs.Add(list(list(
+					"name" = initial(AR.name),
+					"id" = ckey(initial(AR.name)),
+					"volume" = vol,
+					"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
+					)))
+			reagent_recipes.Add(list(list("name" = ACR.name, "id" = ACR.name, "desc" = ACR.desc)))
+			.["reqs"+ACR.name] = reqs
+			.[ACR.name] = recipe_list["AC_REAGENT"][ACR]
+
+		.["ReagentRecipes"] = reagent_recipes
 
 /obj/machinery/abnormality_chemstation/ui_act(action, params)
 	. = ..()
@@ -277,4 +313,4 @@
 #undef AC_SCREEN_HOME
 #undef AC_SCREEN_MIX
 #undef AC_SCREEN_CREATE
-#undef AC_SCREEN_OPTIONS
+#undef AC_SCREEN_REFINE

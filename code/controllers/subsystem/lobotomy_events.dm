@@ -195,9 +195,14 @@ SUBSYSTEM_DEF(lobotomy_events)
 			var/datum/ac_recipe/pe/TP = type_path
 			if(initial(TP.random_amount))
 				continue
-		if(type_path == /datum/ac_recipe/reagent)
+		if(type_path in list(/datum/ac_recipe/reagent, /datum/ac_recipe/refine, /datum/ac_recipe/refine/gift))
 			continue
 		new type_path
+	for(var/abno in subtypesof(/mob/living/simple_animal/hostile/abnormality))
+		var/mob/living/simple_animal/hostile/abnormality/better_abno = abno
+		if(!initial(better_abno.gift_type) || !initial(better_abno.chem_type)) // No chem/gift? Skip.
+			continue
+		new /datum/ac_recipe/refine/gift(better_abno)
 	var/datum/ac_recipe/recipe
 	var/iteration = 1
 	for(var/i = 1 to rand(2, 4))

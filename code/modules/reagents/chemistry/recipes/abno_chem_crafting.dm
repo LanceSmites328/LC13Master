@@ -126,6 +126,23 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 	desc = "Creates N/A's E.G.O. Gift."
 	var/mob/living/simple_animal/hostile/abnormality/linked_abno
 
+/datum/ac_recipe/refine/gift/New(mob/living/simple_animal/hostile/abnormality/abno)
+	. = ..()
+	if(!ispath(abno))
+		qdel(src)
+		return
+	name = "[initial(abno.name)]"+initial(name)
+	desc = "Creates [initial(abno.name)]'s E.G.O. Gift."
+	linked_abno = abno
+	var/req_amount = 3 * initial(abno.chem_yield) * initial(abno.threat_level)
+	chem_req = list(initial(abno.chem_type) = req_amount)
+
+/datum/ac_recipe/refine/gift/Craft(obj/machinery/abnormality_chemstation/chemstation)
+	. = ..()
+	if(!.)
+		return
+	new /obj/item/ego_gift(get_turf(chemstation), initial(linked_abno.gift_type))
+
 /obj/item/ego_gift
 	name = "Appliable E.G.O. Gift"
 	desc = "Use in-hand to gain the E.G.O. Gift inside."
@@ -133,12 +150,12 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 	icon_state = "capsule"
 	var/datum/ego_gifts/result
 
-/obj/item/ego_gift/New(loc, ...)
+/obj/item/ego_gift/New(loc, datum/ego_gifts/gift_arg, ...)
 	. = ..()
-	if(!args[2])
+	if(!gift_arg)
 		qdel(src)
 		return
-	result = args[2]
+	result = new gift_arg
 
 /obj/item/ego_gift/attack_self(mob/living/carbon/human/user)
 	. = ..()
