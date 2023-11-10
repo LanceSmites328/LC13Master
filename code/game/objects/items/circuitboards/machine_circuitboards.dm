@@ -657,15 +657,6 @@
 	else
 		return ..()
 
-/obj/item/circuitboard/machine/abnormality_chemstation
-	name = "Abno-Chem Mixer (Machine Board)"
-	icon_state = "medical"
-	build_path = /obj/machinery/abnormality_chemstation
-	req_components = list(
-		/obj/item/reagent_containers/glass/beaker = 2,
-		/obj/item/stock_parts/manipulator = 1,
-		/obj/item/stack/sheet/glass = 1)
-
 /obj/item/circuitboard/machine/cryo_tube
 	name = "Cryotube (Machine Board)"
 	icon_state = "medical"

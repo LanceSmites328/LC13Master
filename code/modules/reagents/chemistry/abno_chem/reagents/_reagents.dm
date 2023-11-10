@@ -97,7 +97,7 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 				readout2 |= "- substance may physically harm subject"
 			if(abnoChem.sanity_restore > 0)
 				readout2 |= "- substance may improve subject mental stability"
-			else if(abnoChem.health_restore < 0)
+			else if(abnoChem.sanity_restore < 0)
 				readout2 |= "- substance may reduce subject mental stability"
 			if((abnoChem.stat_changes[1] || abnoChem.stat_changes[2] || abnoChem.stat_changes[3] || abnoChem.stat_changes[4]) != 0)
 				readout2 |= "- substance may alter subject's abilities"
@@ -142,3 +142,9 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 	new /obj/item/paper/guides/jobs/abnochem_effects_he(src)
 	new /obj/item/storage/box/beakers(src)
 	new /obj/item/storage/box/beakers(src)
+	new /obj/item/circuitboard/machine/abnormality_chemstation(src)
+
+/obj/item/food/badrecipe/abno_flesh
+	name = "strange flesh"
+	desc = "Most flesh from whatever that was..."
+	food_reagents = list(/datum/reagent/abnormality/abno_flesh = 10)

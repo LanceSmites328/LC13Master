@@ -314,6 +314,15 @@
 	for(var/AR in subtypesof(/datum/reagent/abnormality))
 		reagents.add_reagent(AR, 10)
 
+/obj/item/circuitboard/machine/abnormality_chemstation
+	name = "Abno-Chem Mixer (Machine Board)"
+	icon_state = "medical"
+	build_path = /obj/machinery/abnormality_chemstation
+	req_components = list(
+		/obj/item/reagent_containers/glass/beaker = 2,
+		/obj/item/stock_parts/manipulator = 1,
+		/obj/item/stack/sheet/glass = 1)
+
 /proc/FetchRecipe(id)
 	for(var/I in GLOB.abnormality_chem_recipes)
 		var/datum/ac_recipe/rec = GLOB.abnormality_chem_recipes[I]

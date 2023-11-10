@@ -16,7 +16,8 @@
 		/datum/reagent/abnormality/cleanliness,
 		/datum/reagent/abnormality/consensus,
 		/datum/reagent/abnormality/amusement,
-		/datum/reagent/abnormality/violence
+		/datum/reagent/abnormality/violence,
+		/datum/reagent/abnormality/abno_flesh
 	)
 
 	max_catalysts = 0
@@ -30,7 +31,7 @@
 	if(src.type == /datum/chemical_reaction/randomized/abno_chem)
 		return FALSE
 	if(random_threat_level)
-		possible_reagents = list()
+		possible_reagents = list(/datum/reagent/abnormality/abno_flesh)
 		for(var/type_path in subtypesof(/mob/living/simple_animal/hostile/abnormality))
 			var/mob/living/simple_animal/hostile/abnormality/abno = type_path
 			if(initial(abno.threat_level) != random_threat_level || !initial(abno.chem_type))

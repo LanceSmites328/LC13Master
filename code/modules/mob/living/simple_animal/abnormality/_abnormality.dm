@@ -122,6 +122,7 @@
 	if(istype(datum_reference)) // Respawn the mob on death
 		datum_reference.current = null
 		addtimer(CALLBACK (datum_reference, .datum/abnormality/proc/RespawnAbno), 30 SECONDS)
+	new /obj/item/food/badrecipe/abno_flesh(get_turf(src))
 	..()
 	if(loc)
 		if(isarea(loc))
