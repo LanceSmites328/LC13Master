@@ -1062,3 +1062,7 @@
 #define COMSIG_FEAR_EFFECT "fear_effect"
 ///Whenever the season is changed through god of the seasons or its E.G.O.
 #define COMSIG_GLOB_SEASON_CHANGE "!change_season"
+
+// Abno Chem Signals
+/// Sent whenever a new randomized reagent reaction is made.
+#define COMSIG_GLOB_NEW_REACTION "!new_reaction"

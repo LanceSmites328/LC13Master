@@ -98,10 +98,3 @@
 		protected_people.Remove(user)
 		user.gib()
 	return
-
-/datum/reagent/abnormality/fairy_festival
-	name = "Nectar of an Unknown Flower"
-	description = "The fairies got this for you..."
-	color = "#e4d0b2"
-	health_restore = 2
-	armor_mods = list(-2, 0, 0, 0)

@@ -82,20 +82,6 @@
 	inhand_icon_state = "purple_can"
 	list_reagents = list(/datum/reagent/consumable/wellcheers_purple = 10)
 
-/datum/reagent/abnormality/wellcheers_zero
-	name = "Wellcheers Zero"
-	description = "Low-impact soda for the high-energy lifestyle."
-	special_properties = list("substance may have erratic effects on subject's physical and mental state")
-	color = "#b2e0c0"
-
-/datum/reagent/abnormality/wellcheers_zero/on_mob_life(mob/living/L)
-	if(!ishuman(L))
-		return
-	var/mob/living/carbon/human/H = L
-	H.adjustBruteLoss(rand(-2, 3) * REAGENTS_EFFECT_MULTIPLIER)
-	H.adjustSanityLoss(rand(-2, 3) * REAGENTS_EFFECT_MULTIPLIER)
-	return ..()
-
 //Shrimple boat stuff
 /turf/open/water/deep/saltwater/extradeep
 

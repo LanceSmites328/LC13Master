@@ -2,6 +2,7 @@
 #define YINYANG 2
 SUBSYSTEM_DEF(lobotomy_events)
 	name = "Lobotomy Corp Events"
+	init_order = INIT_ORDER_LCEVENTS
 	flags = SS_KEEP_TIMING | SS_BACKGROUND
 	wait = 10 SECONDS
 
@@ -193,7 +194,7 @@ SUBSYSTEM_DEF(lobotomy_events)
 	for(var/type_path in subtypesof(/datum/ac_recipe))
 		if(ispath(type_path, /datum/ac_recipe/pe))
 			var/datum/ac_recipe/pe/TP = type_path
-			if(initial(TP.random_amount))
+			if(initial(TP.random_amount)) // Random ones are made later
 				continue
 		if(type_path in list(/datum/ac_recipe/reagent, /datum/ac_recipe/refine, /datum/ac_recipe/refine/gift))
 			continue
@@ -203,19 +204,11 @@ SUBSYSTEM_DEF(lobotomy_events)
 		if(!initial(better_abno.gift_type) || !initial(better_abno.chem_type)) // No chem/gift? Skip.
 			continue
 		new /datum/ac_recipe/refine/gift(better_abno)
-	var/datum/ac_recipe/recipe
-	var/iteration = 1
-	for(var/i = 1 to rand(2, 4))
-		recipe = new /datum/ac_recipe/pe
-		recipe.name = recipe.name + " ([iteration])"
-		iteration++
-	iteration = 1
-	for(var/i = 1 to rand(2, 5))
-		recipe = new /datum/ac_recipe/pe/medium
-		recipe.name = recipe.name + " ([iteration])"
-		iteration++
-	iteration = 1
-	for(var/i = 1 to rand(2, 3))
-		recipe = new /datum/ac_recipe/pe/hard
-		recipe.name = recipe.name + " ([iteration])"
-		iteration++
+	for(var/rec in typesof(/datum/ac_recipe/pe))
+		var/datum/ac_recipe/pe/recipe = rec
+		if(!initial(recipe.random_amount))
+			continue
+		for(var/i = 1 to rand(initial(recipe.recipe_amount_min), initial(recipe.recipe_amount_max)))
+			recipe = new rec
+
+

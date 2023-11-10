@@ -127,6 +127,7 @@
 #define INIT_ORDER_OUTPUTS			35
 #define INIT_ORDER_ATOMS			30
 #define INIT_ORDER_LANGUAGE			25
+#define INIT_ORDER_LCEVENTS			21 // Before machines for abno_chem recipes
 #define INIT_ORDER_MACHINES			20
 #define INIT_ORDER_SKILLS			15
 #define INIT_ORDER_TIMER			1

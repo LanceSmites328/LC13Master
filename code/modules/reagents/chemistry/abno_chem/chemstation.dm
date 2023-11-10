@@ -1,6 +1,5 @@
 /// COXSWAIN. WE NEED TO COOK.
 #define AC_SCREEN_HOME "ac_home"
-#define AC_SCREEN_MIX "ac_mix"
 #define AC_SCREEN_CREATE "ac_create"
 #define AC_SCREEN_REFINE "ac_refine"
 
@@ -20,6 +19,7 @@
 	idle_power_usage = 20
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	circuit = /obj/item/circuitboard/machine/abnormality_chemstation
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
 	/// Held reagents container
 	var/obj/item/reagent_containers/RC
@@ -38,9 +38,15 @@
 	. = ..()
 	create_reagents(2500)
 	reagents.flags = NO_REACT
-	for(var/datum/ac_recipe/ACR in GLOB.abnormality_chem_recipes)
+	for(var/I in GLOB.abnormality_chem_recipes)
+		var/datum/ac_recipe/ACR = GLOB.abnormality_chem_recipes[I]
+		/*
+		if(ACR.craft_category == "AC_REAGENT")
+			continue
+		*/
 		LAZYADDASSOC(recipe_list, ACR.craft_category, list(ACR))
 		recipe_list[ACR.craft_category][ACR] = FALSE
+	RegisterSignal(SSdcs, "!new_reaction", .proc/AddRecipe)
 	mixer = new(src)
 
 /obj/machinery/abnormality_chemstation/Destroy()
@@ -100,6 +106,20 @@
 		get_asset_datum(/datum/asset/spritesheet/simple/condiments),
 	)
 
+/obj/machinery/abnormality_chemstation/ui_static_data(mob/user)
+	. = ..()
+	var/list/create_recipes = list()
+	for(var/datum/ac_recipe/ACR in recipe_list["AC_PE"])
+		create_recipes.Add(list(list("name" = ACR.name, "id" = ACR.id, "desc" = ACR.desc)))
+
+	.["CreateRecipes"] = create_recipes
+
+	var/list/refine_recipes = list()
+	for(var/datum/ac_recipe/ACR in recipe_list["AC_REFINE"])
+		refine_recipes.Add(list(list("name" = ACR.name, "id" = ACR.id, "desc" = ACR.desc)))
+
+	.["RefineRecipes"] = refine_recipes
+
 /obj/machinery/abnormality_chemstation/ui_data(mob/user)
 	. = list()
 	.["screen"] = screen
@@ -127,61 +147,51 @@
 			mixer_contents.Add(list(list("name" = N.name, "id" = ckey(N.name), "volume" = N.volume))) // ^
 	.["mixerContents"] = mixer_contents
 
-	if(screen == AC_SCREEN_CREATE)
-		var/list/recipes = list()
-		for(var/datum/ac_recipe/ACR in recipe_list["AC_PE"])
-			var/list/reqs = list()
-			for(var/R in ACR.chem_req)
-				var/datum/reagent/AR = R
-				var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
-				reqs.Add(list(list(
-					"name" = initial(AR.name),
-					"id" = ckey(initial(AR.name)),
-					"volume" = vol,
-					"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
-					)))
-			recipes.Add(list(list("name" = ACR.name, "id" = ACR.name, "desc" = ACR.desc)))
-			.["reqs"+ACR.name] = reqs
-			.[ACR.name] = recipe_list["AC_PE"][ACR]
+	var/list/reagent_recipes = list()
+	for(var/datum/ac_recipe/ACR in recipe_list["AC_REAGENT"])
+		var/list/reqs = list()
+		for(var/R in ACR.chem_req)
+			var/datum/reagent/AR = R
+			var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
+			reqs.Add(list(list(
+				"name" = initial(AR.name),
+				"id" = ckey(initial(AR.name)),
+				"volume" = vol,
+				"meets_req" = "label"
+				)))
+		reagent_recipes.Add(list(list("name" = ACR.name, "id" = ACR.id, "desc" = ACR.desc)))
+		.["reqs[ACR.id]"] = reqs
+		.["toggle[ACR.id]"] = recipe_list["AC_REAGENT"][ACR]
 
-		.["recipes"] = recipes
+	for(var/datum/ac_recipe/ACR in recipe_list["AC_REFINE"])
+		var/list/reqs = list()
+		for(var/R in ACR.chem_req)
+			var/datum/reagent/AR = R
+			var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
+			reqs.Add(list(list(
+				"name" = initial(AR.name),
+				"id" = ckey(initial(AR.name)),
+				"volume" = vol,
+				"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
+				)))
+		.["reqs[ACR.id]"] = reqs
+		.["toggle[ACR.id]"] = recipe_list["AC_REFINE"][ACR]
 
-	if(screen == AC_SCREEN_REFINE)
-		var/list/refine_recipes = list()
-		for(var/datum/ac_recipe/ACR in recipe_list["AC_REFINE"])
-			var/list/reqs = list()
-			for(var/R in ACR.chem_req)
-				var/datum/reagent/AR = R
-				var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
-				reqs.Add(list(list(
-					"name" = initial(AR.name),
-					"id" = ckey(initial(AR.name)),
-					"volume" = vol,
-					"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
-					)))
-			refine_recipes.Add(list(list("name" = ACR.name, "id" = ACR.name, "desc" = ACR.desc)))
-			.["reqs"+ACR.name] = reqs
-			.[ACR.name] = recipe_list["AC_REFINE"][ACR]
+	for(var/datum/ac_recipe/ACR in recipe_list["AC_PE"])
+		var/list/reqs = list()
+		for(var/R in ACR.chem_req)
+			var/datum/reagent/AR = R
+			var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
+			reqs.Add(list(list(
+				"name" = initial(AR.name),
+				"id" = ckey(initial(AR.name)),
+				"volume" = vol,
+				"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
+				)))
+		.["reqs[ACR.id]"] = reqs
+		.["toggle[ACR.id]"] = recipe_list["AC_PE"][ACR]
 
-		.["RefineRecipes"] = refine_recipes
-
-		var/list/reagent_recipes = list()
-		for(var/datum/ac_recipe/ACR in recipe_list["AC_REAGENT"])
-			var/list/reqs = list()
-			for(var/R in ACR.chem_req)
-				var/datum/reagent/AR = R
-				var/vol = ACR.chem_req[AR] ? ACR.chem_req[AR] : 0
-				reqs.Add(list(list(
-					"name" = initial(AR.name),
-					"id" = ckey(initial(AR.name)),
-					"volume" = vol,
-					"meets_req" = src.reagents.has_reagent(AR, vol) ? COLOR_GREEN : COLOR_RED
-					)))
-			reagent_recipes.Add(list(list("name" = ACR.name, "id" = ACR.name, "desc" = ACR.desc)))
-			.["reqs"+ACR.name] = reqs
-			.[ACR.name] = recipe_list["AC_REAGENT"][ACR]
-
-		.["ReagentRecipes"] = reagent_recipes
+	.["ReagentRecipes"] = reagent_recipes
 
 /obj/machinery/abnormality_chemstation/ui_act(action, params)
 	. = ..()
@@ -206,7 +216,6 @@
 			return
 
 		if("create")
-			src.say("[params["recipe_type"]]")
 			. = action_create(params["recipe_type"])
 			if(.)
 				playsound(get_turf(src), 'sound/machines/terminal_prompt_confirm.ogg', 50, TRUE)
@@ -233,11 +242,9 @@
 			return TRUE
 
 		if("changeShow")
-			for(var/datum/ac_recipe/AC in GLOB.abnormality_chem_recipes)
-				if(AC.name != params["value"])
-					continue
+			var/datum/ac_recipe/AC = FetchRecipe(params["value"])
+			if(AC)
 				recipe_list[AC.craft_category][AC] = !recipe_list[AC.craft_category][AC]
-				break
 			playsound(get_turf(src), 'sound/machines/terminal_select.ogg', 30, TRUE)
 			return TRUE
 
@@ -281,25 +288,23 @@
 	if(sender == reciever)
 		return
 
-	if(sender == RC)
-		if(!ispath(reagent, /datum/reagent/abnormality))
-			to_chat(user, "<span class='warning'>[src] doesn't accept non-abnormality chemicals!</span>")
-			return
-
 	return sender.reagents.trans_id_to(reciever, reagent, amount)
 
 /obj/machinery/abnormality_chemstation/proc/action_create(recipe)
-	for(var/datum/ac_recipe/rec in GLOB.abnormality_chem_recipes)
-		if(rec.name == recipe)
-			return rec.Craft(src)
-	// we make new stuff here
+	var/datum/ac_recipe/rec = FetchRecipe(recipe)
+	if(rec)
+		return rec.Craft() // we make new stuff here
 	return FALSE
 
+/obj/machinery/abnormality_chemstation/proc/AddRecipe(datum/sender, datum/ac_recipe/recipe)
+	LAZYADDASSOC(recipe_list, recipe.craft_category, list(recipe))
+	recipe_list[recipe.craft_category][recipe] = FALSE
 
 /obj/item/reagent_containers/AC_mixer
 	name = "Abno-Chem Internal Mixer"
 	desc = "Shouldn't be seeing this >:("
 	volume = 100
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
 /obj/item/reagent_containers/glass/beaker/ac_test
 	volume = 1000
@@ -309,6 +314,12 @@
 	for(var/AR in subtypesof(/datum/reagent/abnormality))
 		reagents.add_reagent(AR, 10)
 
+/proc/FetchRecipe(id)
+	for(var/I in GLOB.abnormality_chem_recipes)
+		var/datum/ac_recipe/rec = GLOB.abnormality_chem_recipes[I]
+		if(rec.id == (text2num(id) ? text2num(id) : id))
+			return rec
+	return FALSE
 
 #undef AC_SCREEN_HOME
 #undef AC_SCREEN_MIX

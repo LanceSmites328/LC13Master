@@ -29,6 +29,7 @@
 		/datum/ego_datum/armor/letter_opener
 		)
 	abnormality_origin = ABNORMALITY_ORIGIN_ORIGINAL
+	chem_type = /datum/reagent/abnormality/mailpile
 
 	var/cooldown
 	var/cooldown_time = 10 SECONDS

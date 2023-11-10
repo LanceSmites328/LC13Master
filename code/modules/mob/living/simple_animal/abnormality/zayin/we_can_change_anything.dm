@@ -137,10 +137,3 @@
 		L.physiology.red_mod /= 0.9
 
 #undef STATUS_EFFECT_CHANGE
-
-/datum/reagent/abnormality/we_can_change_anything
-	name = "Dubious Red Goo"
-	description = "You have a strong suspicion about where this came from, but..."
-	color = "#8f1108"
-	health_restore = -1
-	damage_mods = list(0.9, 1, 1, 1)

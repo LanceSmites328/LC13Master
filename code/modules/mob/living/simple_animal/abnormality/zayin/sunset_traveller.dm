@@ -32,6 +32,7 @@
 	light_color = COLOR_ORANGE
 	light_range = 5
 	light_power = 7
+	chem_type = /datum/reagent/abnormality/sunset_traveller
 
 
 /mob/living/simple_animal/hostile/abnormality/sunset_traveller/PostWorkEffect(mob/living/carbon/human/user, work_type, pe, work_time)

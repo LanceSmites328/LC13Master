@@ -148,11 +148,3 @@
 		L.adjust_attribute_buff(JUSTICE_ATTRIBUTE, 20)
 
 #undef STATUS_EFFECT_TEARS
-
-/datum/reagent/abnormality/bottle
-	name = "Crumbs"
-	description = "A small pile of slightly soggy crumbs."
-	reagent_state = SOLID
-	color = "#ad8978"
-	health_restore = 2
-	stat_changes = list(-4, -4, -4, -4)

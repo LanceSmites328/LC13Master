@@ -12,6 +12,7 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 /datum/ac_recipe
 	var/name = "Base Abnormality Chem Recipe"
 	var/desc = "Makes nothing."
+	var/id = 0
 
 	var/craft_category = AC_CAT_NONE
 
@@ -25,7 +26,15 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 
 /datum/ac_recipe/New()
 	. = ..()
-	GLOB.abnormality_chem_recipes += src
+	if(!id || (num2text(id) in GLOB.abnormality_chem_recipes))
+		var/highest = id
+		if(LAZYLEN(GLOB.abnormality_chem_recipes))
+			for(var/i in GLOB.abnormality_chem_recipes)
+				if(text2num(i) > highest)
+					highest = text2num(i)
+		id = highest + 1
+	to_chat(world, "[src], [id]")
+	GLOB.abnormality_chem_recipes[num2text(id)] = src
 
 /datum/ac_recipe/proc/Craft(obj/machinery/abnormality_chemstation/chemstation)
 	// Check to see if we have enough to even do this.
@@ -52,6 +61,10 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 	name = "Refined PE \[Simple\]"
 	desc = "Creates refined PE."
 	craft_category = AC_CAT_PE
+
+	// How many of these are randomly made on round start
+	var/recipe_amount_min = 2
+	var/recipe_amount_max = 4
 
 	var/pe_amount = 1
 	var/req_amount = 3
@@ -98,23 +111,26 @@ GLOBAL_LIST_EMPTY(abnormality_chem_recipes)
 
 /datum/ac_recipe/pe/medium
 	name = "Refined PE \[Complex\]"
+
+	recipe_amount_max = 5
+
 	pe_amount = 2
 	threat_list = list(TETH_LEVEL, HE_LEVEL)
 
 /datum/ac_recipe/pe/hard
 	name = "Refined PE \[Complicated\]"
+
+	recipe_amount_max = 3
+
 	pe_amount = 5
 	threat_list = list(WAW_LEVEL, ALEPH_LEVEL)
 
+
+/// Automated through reactions.dm
 /datum/ac_recipe/reagent
+	name = "Base Abnormality Reagent Recipe"
+	desc = "Makes nothing."
 	craft_category = AC_CAT_REAGENT
-
-/datum/ac_recipe/reagent/beer
-	name = "Abno-Chem Beer Recipe"
-	desc = "Makes beer."
-
-	chem_result = list(/datum/reagent/consumable/ethanol/beer = 10)
-	chem_req = list(/datum/reagent/abnormality/nutrition = 5)
 
 /datum/ac_recipe/refine
 	name = "Refined Recipe"

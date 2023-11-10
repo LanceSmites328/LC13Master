@@ -194,19 +194,3 @@
 #undef STATUS_EFFECT_PARABLE
 #undef STATUS_EFFECT_WIFE_STORY
 #undef STATUS_EFFECT_DEMENTIA_RAMBLINGS
-
-/datum/reagent/abnormality/quiet_day
-	name = "Liquid Nostalgia"
-	description = "A deep, dark-colored goo. Looking at it, you're almost convinced you see something more."
-	color = "#110320"
-	sanity_restore = -2
-	stat_changes = list(2, 2, 2, 2) // Sort of reverse bottle. Stat gain for ongoing sanity loss. Not a huge stat gain since it's split into four, but something.
-
-//Audiovisual stuff
-/mob/living/simple_animal/hostile/abnormality/quiet_day/Initialize()
-	. = ..()
-	soundloop = new(list(src), TRUE)
-
-/mob/living/simple_animal/hostile/abnormality/quiet_day/Destroy()
-	QDEL_NULL(soundloop)
-	..()

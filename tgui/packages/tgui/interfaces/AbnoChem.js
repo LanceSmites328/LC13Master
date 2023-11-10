@@ -35,11 +35,6 @@ const MoveButtons = (props, context) => {
         content={"Home"}
         onClick={() => act("changeScreen", { to_screen: "ac_home" })} />
       )}
-      {screen !== 'ac_mix' && (
-        <Button
-        content={"Mix"}
-        onClick={() => act("changeScreen", { to_screen: "ac_mix" })} />
-      )}
       {screen !== 'ac_create' && (
         <Button
         content={"Create"}
@@ -57,7 +52,6 @@ const MoveButtons = (props, context) => {
 const Home = (props, context) => {
   const { act, data } = useBackend(context);
   const {
-    screen,
     containerContents = [],
     bufferContents = [],
     mixerContents = [],
@@ -66,15 +60,6 @@ const Home = (props, context) => {
     container,
     move_destination,
   } = data;
-  if (screen === 'ac_mix') {
-    return <Mix />;
-  }
-  else if (screen === 'ac_create') {
-    return <Create />;
-  }
-  else if (screen === 'ac_options') {
-    return <Refine />;
-  }
   return (
     <>
       <Section
@@ -175,44 +160,20 @@ const Home = (props, context) => {
   );
 };
 
-const Mix = (props, context) => {
-  const { act, data } = useBackend(context);
-  const {
-    screen,
-    containerContents = [],
-    bufferContents = [],
-    containerCurrentVolume,
-    containerMaxVolume,
-    container,
-
-  } = data;
-  return (
-    <Section>
-
-    </Section>
-  );
-};
-
 const Create = (props, context) => {
-  const { act, data } = useBackend(context);
+  const { data } = useBackend(context);
   const {
-    screen,
-    containerContents = [],
-    bufferContents = [],
-    containerCurrentVolume,
-    containerMaxVolume,
-    container,
-    recipes = [],
+    CreateRecipes = [],
   } = data;
   return (
     <Section title="Recipes">
       <RecipeList>
-        {recipes.map(recipe => (
+        {CreateRecipes.map(recipe => (
           <RecipeListEntry
             key={recipe.id}
             recipe={recipe}
-            reqList={data["reqs"+recipe.name]}
-            showReq={data[recipe.name]} />
+            reqList={data["reqs"+recipe.id]}
+            showReq={data["toggle"+recipe.id]} />
         ))}
       </RecipeList>
     </Section>
@@ -220,14 +181,8 @@ const Create = (props, context) => {
 };
 
 const Refine = (props, context) => {
-  const { act, data } = useBackend(context);
+  const { data } = useBackend(context);
   const {
-    screen,
-    containerContents = [],
-    bufferContents = [],
-    containerCurrentVolume,
-    containerMaxVolume,
-    container,
     RefineRecipes = [],
     ReagentRecipes = [],
   } = data;
@@ -239,19 +194,19 @@ const Refine = (props, context) => {
             <RecipeListEntry
               key={recipe.id}
               recipe={recipe}
-              reqList={data["reqs"+recipe.name]}
-              showReq={data[recipe.name]} />
+              reqList={data["reqs"+recipe.id]}
+              showReq={data["toggle"+recipe.id]} />
           ))}
         </RecipeList>
       </Section>
       <Section title="Reagents">
         <RecipeList>
           {ReagentRecipes.map(recipe => (
-            <RecipeListEntry
+            <RecipeListEntryNoButton
               key={recipe.id}
               recipe={recipe}
-              reqList={data["reqs"+recipe.name]}
-              showReq={data[recipe.name]} />
+              reqList={data["reqs"+recipe.id]}
+              showReq={data["toggle"+recipe.id]} />
           ))}
         </RecipeList>
       </Section>
@@ -262,7 +217,7 @@ const Refine = (props, context) => {
 const RecipeList = Table;
 
 const RecipeListEntry = (props, context) => {
-  const { act, data } = useBackend(context);
+  const { act } = useBackend(context);
   const { recipe = [],
           reqList = [],
           showReq,
@@ -279,12 +234,50 @@ const RecipeListEntry = (props, context) => {
           <Table.Cell collapsing>
             <Button
               bold content={"V"}
-              onClick={() => act("changeShow", { value: recipe.name })} />
+              onClick={() => act("changeShow", { value: recipe.id })} />
           </Table.Cell>
           <Table.Cell collapsing>
             <Button
               icon="plus" bold content={"Create"}
-              onClick={() => act("create", { recipe_type: recipe.name })} />
+              onClick={() => act("create", { recipe_type: recipe.id })} />
+          </Table.Cell>
+        </Table.Row>
+        { showReq === 1 && (
+          reqList.map(req => (
+            <RecipeContentEntry
+              key={req.id}
+              requirement={req}
+            />
+           )) || showReq === 0 && (<Table.Row key={recipe.desc}>
+              <Box color="label" mt="3px" mb="5px">
+                {" □ "+recipe.desc}
+              </Box>
+            </Table.Row>)
+        )}
+      </RecipeContent>
+    </Table.Row>
+  );
+};
+
+const RecipeListEntryNoButton = (props, context) => {
+  const { act } = useBackend(context);
+  const { recipe = [],
+          reqList = [],
+          showReq,
+        } = props;
+  return (
+    <Table.Row key={recipe.id}>
+      <RecipeContent width="100%">
+        <Table.Row collapsing>
+           <Table.Cell color="label">
+            <Box color="label" mt="4px" mb="6px">
+              {recipe.name}
+            </Box>
+          </Table.Cell>
+          <Table.Cell collapsing>
+            <Button
+              bold content={"V"}
+              onClick={() => act("changeShow", { value: recipe.id })} />
           </Table.Cell>
         </Table.Row>
         { showReq === 1 && (

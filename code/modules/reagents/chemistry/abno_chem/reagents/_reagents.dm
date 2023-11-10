@@ -11,7 +11,6 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 	var/health_restore = 0 // % of health restored per tick. For reference, Salicylic Acid is 4. Set to negative and it'll hurt!
 	var/sanity_restore = 0 // % of sanity restored per tick. For reference, Mental Stabilizator is 5. Set to negative and it'll hurt!
 	var/list/stat_changes = list(0, 0, 0, 0) // Fortitude, Prudence, Temperance, Justice, in order. Positive and negative both work.
-	var/list/armor_mods = list(0, 0, 0, 0) // Red, white, black, pale, in order. 10 = I, 50 = V, 100 = X. Applies additively. (Or subtractively, if negative.) USE SPARINGLY!
 	var/list/damage_mods = list(1, 1, 1, 1) // Same order as armor_mods, but multiplicative. Applied after armor. Knight of Despair's blessed has 0.5, 0.5, 0.5, 2.0, for reference.
 
 /datum/reagent/abnormality/on_mob_life(mob/living/L)
@@ -33,8 +32,6 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 		H.adjust_attribute_buff(PRUDENCE_ATTRIBUTE, stat_changes[2])
 		H.adjust_attribute_buff(TEMPERANCE_ATTRIBUTE, stat_changes[3])
 		H.adjust_attribute_buff(JUSTICE_ATTRIBUTE, stat_changes[4])
-	if((armor_mods[1] || armor_mods[2] || armor_mods[3] || armor_mods[4]) != 0)
-		H.physiology.armor = H.physiology.armor.modifyRating(red = armor_mods[1], white = armor_mods[2], black = armor_mods[3], pale = armor_mods[4])
 	if((damage_mods[1] || damage_mods[2] || damage_mods[3] || damage_mods[4]) != 1)
 		H.physiology.red_mod *= damage_mods[1]
 		H.physiology.white_mod *= damage_mods[2]
@@ -50,63 +47,11 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 		H.adjust_attribute_buff(PRUDENCE_ATTRIBUTE, -stat_changes[2])
 		H.adjust_attribute_buff(TEMPERANCE_ATTRIBUTE, -stat_changes[3])
 		H.adjust_attribute_buff(JUSTICE_ATTRIBUTE, -stat_changes[4])
-	if((armor_mods[1] || armor_mods[2] || armor_mods[3] || armor_mods[4]) != 0)
-		H.physiology.armor = H.physiology.armor.modifyRating(red = -armor_mods[1], white = -armor_mods[2], black = -armor_mods[3], pale = -armor_mods[4])
 	if((damage_mods[1] || damage_mods[2] || damage_mods[3] || damage_mods[4]) != 1)
 		H.physiology.red_mod /= damage_mods[1]
 		H.physiology.white_mod /= damage_mods[2]
 		H.physiology.black_mod /= damage_mods[3]
 		H.physiology.pale_mod /= damage_mods[4]
-
-///// Dummy chems that will be produced when harvesting from an abnormality that has no unique chem.
-
-/datum/reagent/abnormality/nutrition // Restores some HP, but you go hungry faster.
-	name = "Generic Enkephalin Derivate type NT"
-	description = "Barely stable, but it exists..."
-	color = "#e56f3e"
-	metabolization_rate = 0.25 * REAGENTS_METABOLISM
-	health_restore = 2
-	special_properties = list("substance may alter subject metabolism")
-
-/datum/reagent/abnormality/nutrition/on_mob_life(mob/living/L)
-	if(!ishuman(L))
-		return
-	var/mob/living/carbon/human/H = L
-	H.adjust_nutrition(-1 * HUNGER_FACTOR)
-	return ..()
-
-/datum/reagent/abnormality/cleanliness // Damages you, but cleans you off. (This is a meme.)
-	name = "Generic Enkephalin Derivate type CN"
-	description = "Barely stable, but it exists..."
-	color = "#2ca369"
-	health_restore = -1
-	special_properties = list("substance may alter subject's physical appearance")
-
-/datum/reagent/abnormality/cleanliness/on_mob_metabolize(mob/living/L)
-	var/atom/cleaned = L
-	cleaned.wash(CLEAN_WASH)
-	to_chat(cleaned, "<span class='nicegreen'>You feel like new!</span>")
-	return ..()
-
-/datum/reagent/abnormality/consensus // Restores some SP, but renders you weaker to white damage.
-	name = "Generic Enkephalin Derivate type CS"
-	description = "Barely stable, but it exists..."
-	color = "#469e93"
-	sanity_restore = 2
-	damage_mods = list(1, 1.2, 1, 1)
-
-/datum/reagent/abnormality/amusement // Increases Prudence and Fortitude, penalizes Justice.
-	name = "Generic Enkephalin Derivate type AM"
-	description = "Barely stable, but it exists..."
-	color = "#df7685"
-	stat_changes = list(5, 5, 0, -10)
-
-/datum/reagent/abnormality/violence // Damages you, but increases justice.
-	name = "Generic Enkephalin Derivate type VL"
-	description = "Barely stable, but it exists..."
-	color = "#dd3e3b"
-	health_restore = -2
-	stat_changes = list(0, 0, 0, 10)
 
 ///// Abnochem scanner!
 
@@ -156,7 +101,7 @@ GLOBAL_LIST_EMPTY(cached_abno_chems)
 				readout2 |= "- substance may reduce subject mental stability"
 			if((abnoChem.stat_changes[1] || abnoChem.stat_changes[2] || abnoChem.stat_changes[3] || abnoChem.stat_changes[4]) != 0)
 				readout2 |= "- substance may alter subject's abilities"
-			if((abnoChem.armor_mods[1] || abnoChem.armor_mods[2] || abnoChem.armor_mods[3] || abnoChem.armor_mods[4]) != 0 || (abnoChem.damage_mods[1] || abnoChem.damage_mods[2] || abnoChem.damage_mods[3] || abnoChem.damage_mods[4]) != 1)
+			if((abnoChem.damage_mods[1] || abnoChem.damage_mods[2] || abnoChem.damage_mods[3] || abnoChem.damage_mods[4]) != 1)
 				readout2 |= "- substance may alter subject's durability"
 		for(var/reportLine in readout1)
 			to_chat(usr, reportLine)
