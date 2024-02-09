@@ -110,7 +110,7 @@ GLOBAL_VAR_INIT(dynamic_forced_threat_level, -1)
 	dat += "Dynamic Mode <a href='?_src_=vars;[HrefToken()];Vars=[REF(src)]'>\[VV\]</a> <a href='?src=[text_ref(src)];[HrefToken()]'>\[Refresh\]</a><BR>"
 	dat += "Threat Level: <b>[threat_level]</b><br/>"
 
-	dat += "Threat to Spend: <b>[threat]</b> <a href='?src=\ref[src];[HrefToken()];adjustthreat=1'>\[Adjust\]</A> <a href='?src=[text_ref(src)];[HrefToken()];threatlog=1'>\[View Log\]</a><br/>"
+	dat += "Threat to Spend: <b>[threat]</b> <a href='?src=[text_ref(src)];[HrefToken()];adjustthreat=1'>\[Adjust\]</A> <a href='?src=[text_ref(src)];[HrefToken()];threatlog=1'>\[View Log\]</a><br/>"
 	dat += "<br/>"
 	dat += "Parameters: centre = [GLOB.dynamic_curve_centre] ; width = [GLOB.dynamic_curve_width].<br/>"
 	dat += "<i>On average, <b>[peaceful_percentage]</b>% of the rounds are more peaceful.</i><br/>"

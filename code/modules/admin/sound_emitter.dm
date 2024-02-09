@@ -65,7 +65,7 @@
 	dat += "<br>"
 	dat += "<b>Mode:</b> <a href='?src=[text_ref(src)];edit_mode=1'>[motus_operandi]</a><br>"
 	if(motus_operandi != SOUND_EMITTER_LOCAL)
-		dat += "<b>Range:</b> <a href='?src=\ref[src];edit_range=1'>[emitter_range]</a>[emitter_range == SOUND_EMITTER_RADIUS ? "<a href='?src=[text_ref(src)];edit_radius=1'>[play_radius]-tile radius</a>" : ""]<br>"
+		dat += "<b>Range:</b> <a href='?src=[text_ref(src)];edit_range=1'>[emitter_range]</a>[emitter_range == SOUND_EMITTER_RADIUS ? "<a href='?src=[text_ref(src)];edit_radius=1'>[play_radius]-tile radius</a>" : ""]<br>"
 	dat += "<br>"
 	dat += "<a href='?src=[text_ref(src)];play=1'>Play Sound</a> (interrupts other sound emitter sounds)"
 	var/datum/browser/popup = new(user, "emitter", "", 500, 600)
