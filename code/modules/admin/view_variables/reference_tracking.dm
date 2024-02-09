@@ -92,7 +92,7 @@
 			var/variable = vars_list[varname]
 
 			if(variable == src)
-				testing("Found [type] \ref[src] in [datum_container.type]'s [varname] var. [container_name]")
+				testing("Found [type] [text_ref(src)] in [datum_container.type]'s [varname] var. [container_name]")
 
 			else if(islist(variable))
 				DoSearchVar(variable, "[container_name] -> list", recursive_limit - 1)
@@ -101,10 +101,10 @@
 		var/normal = IS_NORMAL_LIST(potential_container)
 		for(var/element_in_list in potential_container)
 			if(element_in_list == src)
-				testing("Found [type] \ref[src] in list [container_name].")
+				testing("Found [type] [text_ref(src)] in list [container_name].")
 
 			else if(element_in_list && !isnum(element_in_list) && normal && potential_container[element_in_list] == src)
-				testing("Found [type] \ref[src] in list [container_name]\[[element_in_list]\]")
+				testing("Found [type] [text_ref(src)] in list [container_name]\[[element_in_list]\]")
 
 			else if(islist(element_in_list))
 				DoSearchVar(element_in_list, "[container_name] -> list", recursive_limit - 1)

@@ -43,25 +43,40 @@
 			r_pocket = item_path
 
 
-/proc/collect_vv(obj/item/I)
+/proc/collect_vv(obj/item/item)
 	//Temporary/Internal stuff, do not copy these.
-	var/static/list/ignored_vars = list("vars","x","y","z","plane","layer","override","animate_movement","pixel_step_size","screen_loc","fingerprintslast","tip_timer")
+	var/static/list/ignored_vars = list(
+		NAMEOF(item, animate_movement),
+#ifndef EXPERIMENT_515_DONT_CACHE_REF
+		NAMEOF(item, cached_ref),
+#endif
+		NAMEOF(item, datum_flags),
+		NAMEOF(item, fingerprintslast),
+		NAMEOF(item, layer),
+		NAMEOF(item, plane),
+		NAMEOF(item, screen_loc),
+		NAMEOF(item, tip_timer),
+		NAMEOF(item, vars),
+		NAMEOF(item, x),
+		NAMEOF(item, y),
+		NAMEOF(item, z),
+	)
 
-	if(istype(I) && I.datum_flags & DF_VAR_EDITED)
+	if(istype(item) && item.datum_flags & DF_VAR_EDITED)
 		var/list/vedits = list()
-		for(var/varname in I.vars)
-			if(!I.can_vv_get(varname))
+		for(var/varname in item.vars)
+			if(!item.can_vv_get(varname))
 				continue
 			if(varname in ignored_vars)
 				continue
-			var/vval = I.vars[varname]
+			var/vval = item.vars[varname]
 			//Does it even work ?
-			if(vval == initial(I.vars[varname]))
+			if(vval == initial(item.vars[varname]))
 				continue
 			//Only text/numbers and icons variables to make it less weirdness prone.
 			if(!istext(vval) && !isnum(vval) && !isicon(vval))
 				continue
-			vedits[varname] = I.vars[varname]
+			vedits[varname] = item.vars[varname]
 		return vedits
 
 /mob/living/carbon/human/proc/copy_outfit()

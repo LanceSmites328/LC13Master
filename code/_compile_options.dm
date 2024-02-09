@@ -23,6 +23,10 @@
 
 #endif //ifdef REFERENCE_TRACKING
 
+// If defined, we will compile with FULL timer debug info, rather then a limited scope
+// Be warned, this increases timer creation cost by 5x
+// #define TIMER_DEBUG
+
 #define VISUALIZE_ACTIVE_TURFS	//Highlights atmos active turfs in green
 #define TRACK_MAX_SHARE	//Allows max share tracking, for use in the atmos debugging ui
 #endif //ifdef TESTING

@@ -39,6 +39,8 @@ When using time2text(), please use "DDD" to find the weekday. Refrain from using
 #define SATURDAY	"Sat"
 #define SUNDAY		"Sun"
 
+#define MILLISECONDS *0.01
+
 #define SECONDS *10
 
 #define MINUTES SECONDS*60
@@ -50,5 +52,7 @@ When using time2text(), please use "DDD" to find the weekday. Refrain from using
 #define DS2TICKS(DS) ((DS)/world.tick_lag)
 
 #define TICKS2DS(T) ((T) TICKS)
+
+#define MS2DS(T) ((T) MILLISECONDS)
 
 #define ROUNDTIME world.time - SSticker.round_start_time
