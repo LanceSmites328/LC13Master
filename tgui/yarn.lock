@@ -3825,13 +3825,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.10.0":
-  version: 1.13.2
-  resolution: "follow-redirects@npm:1.13.2"
+"follow-redirects@npm:^1.14.0":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 76a23a75e5eedb872fc223fcce5b267fd315b123e0fc38f8d7701283445418d9ead72c7ff8a468d95042526a34e5677bfe76b85f973aa0563890c695c975c451
+  checksum: bf144aaa904f4317803d0e1282c972e7cca4664f812635be76f60df03d26c96eb0a127c18e2421c5344edc9aad59ae69206a6c042152f33a2a0122cf1a3d374c
   languageName: node
   linkType: hard
 
@@ -5579,12 +5579,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "marked@npm:2.0.0"
+"marked@npm:^4.0.0":
+  version: 4.3.0
+  resolution: "marked@npm:4.3.0"
   bin:
     marked: bin/marked.js
-  checksum: 45174f93f994e0c08170731bf8c75dedbf8f48b9079599f59b5db841153ad9c9bcaecb947d207e3e991c92d005ac98592b80688171377a61959c0e8e9c01b8ea
+  checksum: c971e04ea18dec146f79d7f26cfa97c17fa689b58871d78a8ab84820a4be08bef1d995910a05457e72be1124a24320a9bd525c6d8f8369d8f5731be57d85e5db
   languageName: node
   linkType: hard
 
@@ -7638,7 +7638,7 @@ __metadata:
     dompurify: ^2.2.6
     inferno: ^7.4.8
     inferno-vnode-flags: ^7.4.8
-    marked: ^2.0.0
+    marked: ^4.0.0
     tgui-dev-server: "workspace:*"
     tgui-polyfill: "workspace:*"
   languageName: unknown
